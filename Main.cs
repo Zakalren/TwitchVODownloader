@@ -107,6 +107,7 @@ namespace TwitchVODownloader
             btnDownload.Enabled = false;
 
             string resolution = GetResolution().Equals("1080p60") ? "chunked" : GetResolution();
+
             string data_folder_path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TwitchVODownloader");
             string video_list_path = Path.Combine(data_folder_path, "video_list");
 
