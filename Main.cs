@@ -104,7 +104,9 @@ namespace TwitchVODownloader
 
         private void StartDownload()
         {
-            string resolution = GetResolution();
+            btnDownload.Enabled = false;
+
+            string resolution = GetResolution().Equals("1080p60") ? "chunked" : GetResolution();
             string data_folder_path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TwitchVODownloader");
             string video_list_path = Path.Combine(data_folder_path, "video_list");
 
@@ -132,7 +134,6 @@ namespace TwitchVODownloader
 
                 if (!line.Contains("cloudfront.net") && line.Contains("vod-secure.twitch.tv"))
                 {
-                    MessageBox.Show("DBG");
                     DownloadVideoListFile(video_list_path);
                     QueueAndDownloadTSFiles(resolution, data_folder_path, video_list_path);
                     return;
@@ -140,6 +141,8 @@ namespace TwitchVODownloader
 
                 if (line.Contains(resolution))
                 {
+                    btnDownload.Text = "다운로드 받는 중...";
+
                     string sub = line.Substring(0, line.LastIndexOf('/'));
                     vodUrl = line.Substring(0, sub.LastIndexOf('/') + 1) + resolution + '/';
 
@@ -180,7 +183,7 @@ namespace TwitchVODownloader
 
         private void CompressTSFiles(int lastFileIndex)
         {
-            MessageBox.Show("필요한 파일들을 다운로드 했습니다. 이제 합치기 작업을 시작합니다.");
+            btnDownload.Text = "영상 합치는 중...";
 
             string video_folder_path = txtBoxPath.Text;
             string tsFilesList = "";
@@ -247,8 +250,6 @@ namespace TwitchVODownloader
 
                 process = Process.Start(processStartInfo);
                 process.WaitForExit();
-
-                MessageBox.Show("합치기 작업을 완료하였습니다.");
             }
 
             else
@@ -268,8 +269,6 @@ namespace TwitchVODownloader
 
                 process = Process.Start(processStartInfo);
                 process.WaitForExit();
-
-                MessageBox.Show("합치기 작업을 완료하였습니다.");
             }
 
             foreach (FileInfo file in new DirectoryInfo(video_folder_path).GetFiles("*.ts"))
@@ -280,7 +279,8 @@ namespace TwitchVODownloader
                 file.Delete();
             }
 
-
+            btnDownload.Enabled = true;
+            MessageBox.Show("다운로드를 완료했습니다.");
         }
 
         private string GetColumnName(int index)
