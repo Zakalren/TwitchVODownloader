@@ -281,6 +281,7 @@ namespace TwitchVODownloader
             }
 
             btnDownload.Enabled = true;
+            btnDownload.Text = "다운로드";
             MessageBox.Show("다운로드를 완료했습니다.");
         }
 
